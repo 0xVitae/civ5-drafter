@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Civ 5 Drafter</title>
+  <meta name="description" content="A random civ drafter for Sid Meier's Civilization V multiplayer games." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main>
+    <h1>Civ 5 Drafter</h1>
+    <p class="subtitle">Random civ assignments for your next multiplayer game.</p>
+
+    <section class="controls">
+      <label>
+        <span>Players</span>
+        <select id="player-count">
+          <option>2</option><option>3</option><option>4</option><option>5</option>
+          <option selected>6</option><option>7</option><option>8</option>
+          <option>9</option><option>10</option><option>11</option><option>12</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Civs per player</span>
+        <select id="civs-per-player">
+          <option>1</option><option>2</option>
+          <option selected>3</option><option>4</option><option>5</option>
+        </select>
+      </label>
+
+      <label class="checkbox">
+        <input type="checkbox" id="allow-duplicates" />
+        <span>Allow duplicate civs</span>
+      </label>
+    </section>
+
+    <section class="filters">
+      <span class="filters-label">Quick ban filters:</span>
+      <button type="button" data-filter="venice-only">Venice Only</button>
+      <button type="button" data-filter="none">None</button>
+      <button type="button" data-filter="all">All</button>
+      <button type="button" data-filter="inverse">Inverse</button>
+    </section>
+
+    <section class="civs">
+      <h2>Allowed / Banned Civilizations</h2>
+      <div id="civ-grid" class="civ-grid"></div>
+    </section>
+
+    <section class="action">
+      <button id="create-game" type="button" class="primary">Create Game</button>
+    </section>
+
+    <section id="results" class="results" hidden>
+      <h2>Draft</h2>
+      <ol id="results-list"></ol>
+      <button id="reroll" type="button">Reroll</button>
+    </section>
+
+    <footer>
+      <p>Civilization V and all civ names are trademarks of 2K Games / Firaxis. This is a fan tool.</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
