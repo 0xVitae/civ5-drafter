@@ -194,3 +194,220 @@ function renderResults(assignments) {
 
 createBtn.addEventListener("click", draft);
 rerollBtn.addEventListener("click", draft);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tier Lists
+// ─────────────────────────────────────────────────────────────────────────────
+
+const TIER_LISTS = [
+  {
+    id: "bacon-falcon",
+    author: "Bacon_Falcon",
+    context: "Pangaea · BNW · Multiplayer",
+    sourceUrl: "https://www.reddit.com/r/civ5/",
+    sourceLabel: "r/civ5, 10y ago",
+    // Tier index = numeric rank, 0 best → 6 worst.
+    tiers: [
+      { label: "God Tier",     note: "Excellent under all circumstances",
+        civs: ["Babylon", "Poland"] },
+      { label: "Top Tier",     note: "Consistently amazing, or conditionally god tier",
+        civs: ["Aztec", "Egypt", "Huns", "Inca", "Korea", "Maya", "Persia", "Shoshone", "Spain"] },
+      { label: "Strong Tier",  note: "Traits that make it consistently powerful",
+        civs: ["Arabia", "China", "England", "Ethiopia", "Russia", "Zulu"] },
+      { label: "Fine Tier",    note: "Decent boost, conditionally great",
+        civs: ["Austria", "Brazil", "Celts", "Germany", "Greece", "India", "Mongolia", "Rome", "Siam"] },
+      { label: "Meh Tier",     note: "Traits potentially good, usually unhelpful",
+        civs: ["America", "Byzantium", "Carthage", "Denmark", "Netherlands", "Indonesia", "Morocco", "Portugal", "Songhai"] },
+      { label: "Generic Tier", note: "Traits negligible or rarely helpful",
+        civs: ["Assyria", "France", "Japan", "Ottomans", "Polynesia", "Sweden"] },
+      { label: "Nerf Tier",    note: "Traits inhibit more than help",
+        civs: ["Iroquois", "Venice"] },
+    ],
+  },
+];
+
+const CIVS_BY_NAME = Object.fromEntries(CIVS.map(c => [c.name, c]));
+
+function getCivCheckbox(name) {
+  return grid.querySelector(`input[data-civ="${name}"]`);
+}
+
+function toggleBan(name) {
+  const cb = getCivCheckbox(name);
+  if (!cb) return;
+  cb.checked = !cb.checked;
+  cb.dispatchEvent(new Event("change"));
+}
+
+function isBanned(name) {
+  const cb = getCivCheckbox(name);
+  return !!(cb && cb.checked);
+}
+
+function civChip(name, tierIdx) {
+  const civ = CIVS_BY_NAME[name];
+  if (!civ) return "";
+  const banned = isBanned(name) ? " banned" : "";
+  return `
+    <button type="button" class="tier-chip${banned}" data-civ="${name}" data-tier="${tierIdx}"
+            title="${civ.leader} — click to ban/unban">
+      <img src="${civ.icon}" alt="" loading="lazy" />
+      <span>${name}</span>
+    </button>
+  `;
+}
+
+function renderTabsMode(container) {
+  const tabs = TIER_LISTS.map((tl, i) => `
+    <button type="button" class="tier-tab${i === 0 ? ' active' : ''}" data-list="${tl.id}">
+      <span class="author">${tl.author}</span>
+      <span class="ctx">${tl.context}</span>
+    </button>
+  `).join("");
+
+  container.innerHTML = `
+    <div class="tier-tabs">${tabs}</div>
+    <div class="tier-panel"></div>
+  `;
+
+  const panel = container.querySelector(".tier-panel");
+  function renderPanel(listId) {
+    const tl = TIER_LISTS.find(t => t.id === listId);
+    panel.innerHTML = `
+      <div class="tier-meta">
+        <a href="${tl.sourceUrl}" target="_blank" rel="noopener">Source: ${tl.sourceLabel}</a>
+      </div>
+      ${tl.tiers.map((t, i) => `
+        <div class="tier-row" data-tier="${i}">
+          <div class="tier-label">
+            <span class="tier-num">${i}</span>
+            <span class="tier-name">${t.label}</span>
+            <span class="tier-note">${t.note}</span>
+          </div>
+          <div class="tier-civs">${t.civs.map(n => civChip(n, i)).join("")}</div>
+        </div>
+      `).join("")}
+    `;
+  }
+  renderPanel(TIER_LISTS[0].id);
+
+  container.querySelectorAll(".tier-tab").forEach(btn => {
+    btn.addEventListener("click", () => {
+      container.querySelectorAll(".tier-tab").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderPanel(btn.dataset.list);
+    });
+  });
+}
+
+function renderDropdownMode(container) {
+  const options = TIER_LISTS.map(tl => `<option value="${tl.id}">${tl.author} — ${tl.context}</option>`).join("");
+  container.innerHTML = `
+    <div class="tier-picker">
+      <label>Tier list:
+        <select id="tier-select">${options}</select>
+      </label>
+    </div>
+    <div class="tier-panel"></div>
+  `;
+  const panel = container.querySelector(".tier-panel");
+  const select = container.querySelector("#tier-select");
+  function renderPanel(listId) {
+    const tl = TIER_LISTS.find(t => t.id === listId);
+    panel.innerHTML = `
+      <div class="tier-meta">
+        <a href="${tl.sourceUrl}" target="_blank" rel="noopener">Source: ${tl.sourceLabel}</a>
+      </div>
+      ${tl.tiers.map((t, i) => `
+        <div class="tier-row tier-row-compact" data-tier="${i}">
+          <div class="tier-label">
+            <span class="tier-num">${i}</span>
+            <span class="tier-name">${t.label}</span>
+          </div>
+          <div class="tier-civs">${t.civs.map(n => civChip(n, i)).join("")}</div>
+        </div>
+      `).join("")}
+    `;
+  }
+  renderPanel(TIER_LISTS[0].id);
+  select.addEventListener("change", () => renderPanel(select.value));
+}
+
+function renderAggregateMode(container) {
+  // Average tier index per civ across all lists. Lower = better.
+  const civStats = {};
+  TIER_LISTS.forEach(tl => {
+    tl.tiers.forEach((t, i) => {
+      t.civs.forEach(name => {
+        const s = civStats[name] || { sum: 0, count: 0, sources: [] };
+        s.sum += i;
+        s.count += 1;
+        s.sources.push({ author: tl.author, tier: i });
+        civStats[name] = s;
+      });
+    });
+  });
+
+  // Group by rounded average tier (0–6).
+  const grouped = [[], [], [], [], [], [], []];
+  Object.entries(civStats).forEach(([name, s]) => {
+    const avg = s.sum / s.count;
+    const bucket = Math.round(avg);
+    grouped[bucket].push({ name, avg, count: s.count, sources: s.sources });
+  });
+  grouped.forEach(g => g.sort((a, b) => a.avg - b.avg || a.name.localeCompare(b.name)));
+
+  const tierNames = ["God", "Top", "Strong", "Fine", "Meh", "Generic", "Nerf"];
+  const totalLists = TIER_LISTS.length;
+  const sourcesLine = TIER_LISTS.map(tl =>
+    `<a href="${tl.sourceUrl}" target="_blank" rel="noopener">${tl.author}</a>`
+  ).join(", ");
+
+  container.innerHTML = `
+    <div class="tier-meta">
+      Aggregated across <strong>${totalLists}</strong> list${totalLists === 1 ? "" : "s"}: ${sourcesLine}
+    </div>
+    ${grouped.map((civs, i) => `
+      <div class="tier-row" data-tier="${i}">
+        <div class="tier-label">
+          <span class="tier-num">${i}</span>
+          <span class="tier-name">${tierNames[i]}</span>
+        </div>
+        <div class="tier-civs">${civs.map(c => {
+          const badge = totalLists > 1
+            ? `<span class="tier-badge" title="avg ${c.avg.toFixed(1)} · ${c.count} source${c.count===1?"":"s"}">${c.avg.toFixed(1)}</span>`
+            : "";
+          return civChip(c.name, i).replace("</button>", `${badge}</button>`);
+        }).join("")}</div>
+      </div>
+    `).join("")}
+  `;
+}
+
+const tierContent = document.getElementById("tier-content");
+const tierModeButtons = document.querySelectorAll(".tier-mode-toggle button");
+
+function renderTierMode(mode) {
+  tierModeButtons.forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
+  if (mode === "tabs") renderTabsMode(tierContent);
+  else if (mode === "aggregate") renderAggregateMode(tierContent);
+  else if (mode === "dropdown") renderDropdownMode(tierContent);
+}
+
+tierModeButtons.forEach(btn => {
+  btn.addEventListener("click", () => renderTierMode(btn.dataset.mode));
+});
+
+// Re-render tier content when civ ban state changes, so chips reflect bans.
+grid.addEventListener("change", () => {
+  const active = document.querySelector(".tier-mode-toggle button.active");
+  if (active) renderTierMode(active.dataset.mode);
+});
+
+// Click a tier chip to toggle ban state in the drafter grid.
+tierContent.addEventListener("click", (e) => {
+  const chip = e.target.closest(".tier-chip");
+  if (chip) toggleBan(chip.dataset.civ);
+});
+
+renderTierMode("tabs");
