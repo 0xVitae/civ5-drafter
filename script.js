@@ -89,12 +89,7 @@ document.querySelectorAll(".filters button").forEach(btn => {
     const filter = btn.dataset.filter;
     if (filter === "none") setBan(() => false);
     else if (filter === "all") setBan(() => true);
-    else if (filter === "inverse") {
-      grid.querySelectorAll("input[type=checkbox]").forEach(input => {
-        input.checked = !input.checked;
-        input.dispatchEvent(new Event("change"));
-      });
-    } else if (filter === "venice-only") {
+    else if (filter === "venice-only") {
       setBan(name => name === "Venice");
     }
   });
