@@ -370,6 +370,11 @@ button.primary:hover {
   text-decoration-color: var(--border);
 }
 
+.tier-date {
+  color: var(--text);
+  font-weight: 500;
+}
+
 .tier-meta a:hover { color: var(--accent); }
 
 .tier-row {

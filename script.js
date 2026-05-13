@@ -204,6 +204,7 @@ const TIER_LISTS = [
     id: "filthy-robot",
     author: "Filthy Robot",
     context: "BNW · v2.0",
+    date: "Jan 30, 2015",
     sourceUrl: "https://docs.google.com/spreadsheets/d/0BybM2PD7AqoKWWwzNjYyaHFvQ2M/edit?resourcekey=0-r448D6uuycdpbQ01Aqe5Ng&gid=335002879",
     sourceLabel: "Google Sheets",
     // Filthy's sheet uses tiers 1–6; normalized here to 0-indexed (best = 0).
@@ -297,7 +298,7 @@ function renderTabsMode(container) {
     const tl = TIER_LISTS.find(t => t.id === listId);
     panel.innerHTML = `
       <div class="tier-meta">
-        <a href="${tl.sourceUrl}" target="_blank" rel="noopener">Source: ${tl.sourceLabel}</a>
+        ${tl.date ? `<span class="tier-date">${tl.date}</span> · ` : ""}<a href="${tl.sourceUrl}" target="_blank" rel="noopener">Source: ${tl.sourceLabel}</a>
       </div>
       ${tl.tiers.map((t, i) => `
         <div class="tier-row" data-tier="${i}">
@@ -338,7 +339,7 @@ function renderDropdownMode(container) {
     const tl = TIER_LISTS.find(t => t.id === listId);
     panel.innerHTML = `
       <div class="tier-meta">
-        <a href="${tl.sourceUrl}" target="_blank" rel="noopener">Source: ${tl.sourceLabel}</a>
+        ${tl.date ? `<span class="tier-date">${tl.date}</span> · ` : ""}<a href="${tl.sourceUrl}" target="_blank" rel="noopener">Source: ${tl.sourceLabel}</a>
       </div>
       ${tl.tiers.map((t, i) => `
         <div class="tier-row tier-row-compact" data-tier="${i}">
