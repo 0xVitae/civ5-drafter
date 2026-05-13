@@ -95,7 +95,7 @@ document.querySelectorAll(".filters button").forEach(btn => {
         input.dispatchEvent(new Event("change"));
       });
     } else if (filter === "venice-only") {
-      setBan(name => name !== "Venice");
+      setBan(name => name === "Venice");
     }
   });
 });
