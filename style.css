@@ -114,6 +114,52 @@ select:focus, button:focus, input:focus {
   margin-right: 4px;
 }
 
+.tier-filters {
+  margin-top: -4px;
+  margin-bottom: 16px;
+}
+
+.tier-ban-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-left: 4px;
+}
+
+.tier-ban-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 4px;
+  font-size: 0.85rem;
+}
+
+.tier-ban-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #1a1408;
+}
+
+.tier-ban-num[data-tier="0"] { background: #d93636; }
+.tier-ban-num[data-tier="1"] { background: #e8731a; }
+.tier-ban-num[data-tier="2"] { background: #d4a93a; }
+.tier-ban-num[data-tier="3"] { background: #5fb37a; }
+.tier-ban-num[data-tier="4"] { background: #5fa3b3; }
+.tier-ban-num[data-tier="5"] { background: #8896a6; }
+.tier-ban-num[data-tier="6"] { background: #4a3a3a; color: var(--text); }
+
+.tier-ban-btn.active {
+  background: var(--banned);
+  border-color: var(--banned-border);
+  color: var(--banned-text);
+}
+
 button {
   background: var(--panel-2);
   color: var(--text);
@@ -278,17 +324,6 @@ button.primary:hover {
   color: var(--muted);
   margin: 0 0 18px;
   font-size: 0.92rem;
-}
-
-.tier-picker {
-  margin-bottom: 16px;
-}
-
-.tier-picker label {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--muted);
 }
 
 .tier-meta {

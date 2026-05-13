@@ -281,25 +281,36 @@ function civChip(name, tierIdx) {
 }
 
 const tierContent = document.getElementById("tier-content");
+const tierListSelect = document.getElementById("tier-list-select");
+const tierBanButtons = document.getElementById("tier-ban-buttons");
 
-const tierOptions = TIER_LISTS
+tierListSelect.innerHTML = TIER_LISTS
   .map(tl => `<option value="${tl.id}">${tl.author} — ${tl.context}</option>`)
   .join("");
 
-tierContent.innerHTML = `
-  <div class="tier-picker">
-    <label>Tier list:
-      <select id="tier-select">${tierOptions}</select>
-    </label>
-  </div>
-  <div class="tier-panel"></div>
-`;
-
+tierContent.innerHTML = `<div class="tier-panel"></div>`;
 const tierPanel = tierContent.querySelector(".tier-panel");
-const tierSelect = tierContent.querySelector("#tier-select");
+
+function activeTierList() {
+  return TIER_LISTS.find(t => t.id === tierListSelect.value);
+}
+
+function renderTierBanButtons() {
+  const tl = activeTierList();
+  tierBanButtons.innerHTML = tl.tiers.map((t, i) => {
+    const allBanned = t.civs.every(isBanned);
+    return `
+      <button type="button" class="tier-ban-btn${allBanned ? ' active' : ''}"
+              data-tier-idx="${i}" title="${t.civs.length} civ${t.civs.length===1?"":"s"}">
+        <span class="tier-ban-num" data-tier="${i}">${i}</span>
+        <span>${t.label}</span>
+      </button>
+    `;
+  }).join("");
+}
 
 function renderTierPanel() {
-  const tl = TIER_LISTS.find(t => t.id === tierSelect.value);
+  const tl = activeTierList();
   tierPanel.innerHTML = `
     <div class="tier-meta">
       ${tl.date ? `<span class="tier-date">${tl.date}</span> · ` : ""}<a href="${tl.sourceUrl}" target="_blank" rel="noopener">Source: ${tl.sourceLabel}</a>
@@ -317,12 +328,32 @@ function renderTierPanel() {
   `;
 }
 
-tierSelect.addEventListener("change", renderTierPanel);
-grid.addEventListener("change", renderTierPanel);
+function renderTierAll() {
+  renderTierBanButtons();
+  renderTierPanel();
+}
+
+tierBanButtons.addEventListener("click", (e) => {
+  const btn = e.target.closest(".tier-ban-btn");
+  if (!btn) return;
+  const idx = parseInt(btn.dataset.tierIdx, 10);
+  const tl = activeTierList();
+  const civs = tl.tiers[idx].civs;
+  const shouldBan = !civs.every(isBanned);
+  civs.forEach(name => {
+    const cb = getCivCheckbox(name);
+    if (!cb || cb.checked === shouldBan) return;
+    cb.checked = shouldBan;
+    cb.dispatchEvent(new Event("change"));
+  });
+});
 
 tierContent.addEventListener("click", (e) => {
   const chip = e.target.closest(".tier-chip");
   if (chip) toggleBan(chip.dataset.civ);
 });
 
-renderTierPanel();
+tierListSelect.addEventListener("change", renderTierAll);
+grid.addEventListener("change", renderTierAll);
+
+renderTierAll();
