@@ -201,6 +201,28 @@ rerollBtn.addEventListener("click", draft);
 
 const TIER_LISTS = [
   {
+    id: "filthy-robot",
+    author: "Filthy Robot",
+    context: "BNW · v2.0",
+    sourceUrl: "https://docs.google.com/spreadsheets/d/0BybM2PD7AqoKWWwzNjYyaHFvQ2M/edit?resourcekey=0-r448D6uuycdpbQ01Aqe5Ng&gid=335002879",
+    sourceLabel: "Google Sheets",
+    // Filthy's sheet uses tiers 1–6; normalized here to 0-indexed (best = 0).
+    tiers: [
+      { label: "God Tier", note: "Bonuses consistent and game-changingly strong",
+        civs: ["Babylon", "Egypt", "England", "Ethiopia", "Huns", "Inca", "Korea", "Maya", "Persia", "Poland"] },
+      { label: "Strong",   note: "Consistent and strong, or situational and game-changing",
+        civs: ["Arabia", "Aztec", "China", "Greece", "Russia", "Shoshone", "Spain", "Zulu"] },
+      { label: "Decent",   note: "Consistent and mediocre, or situational and strong",
+        civs: ["America", "Austria", "Byzantium", "Celts", "Denmark", "Germany", "India", "Indonesia", "Mongolia", "Rome", "Siam", "Songhai"] },
+      { label: "Weak",     note: "Consistent but weak, or situational and mediocre",
+        civs: ["Assyria", "Brazil", "Morocco", "Portugal", "Sweden"] },
+      { label: "Awful",    note: "Consistently inconsequential, or situational and weak",
+        civs: ["Carthage", "France", "Japan", "Netherlands", "Ottomans", "Polynesia"] },
+      { label: "Joke",     note: "Bonuses detrimental to the civilization",
+        civs: ["Iroquois", "Venice"] },
+    ],
+  },
+  {
     id: "bacon-falcon",
     author: "Bacon_Falcon",
     context: "Pangaea · BNW · Multiplayer",
