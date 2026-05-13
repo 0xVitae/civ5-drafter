@@ -280,73 +280,6 @@ button.primary:hover {
   font-size: 0.92rem;
 }
 
-.tier-mode-toggle {
-  display: inline-flex;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 3px;
-  margin-bottom: 18px;
-  gap: 2px;
-}
-
-.tier-mode-toggle button {
-  background: transparent;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 4px;
-  color: var(--muted);
-  font-size: 0.88rem;
-}
-
-.tier-mode-toggle button:hover {
-  color: var(--text);
-  background: var(--panel-2);
-}
-
-.tier-mode-toggle button.active {
-  background: var(--panel-2);
-  color: var(--accent);
-  border-color: transparent;
-}
-
-.tier-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.tier-tab {
-  text-align: left;
-  padding: 8px 14px;
-  border: 1px solid var(--border);
-  background: var(--panel);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  min-width: 160px;
-}
-
-.tier-tab .author {
-  color: var(--text);
-  font-weight: 600;
-  font-size: 0.92rem;
-}
-
-.tier-tab .ctx {
-  color: var(--muted);
-  font-size: 0.78rem;
-}
-
-.tier-tab.active {
-  border-color: var(--accent);
-  background: var(--panel-2);
-}
-
-.tier-tab.active .author { color: var(--accent); }
-
 .tier-picker {
   margin-bottom: 16px;
 }
@@ -424,8 +357,6 @@ button.primary:hover {
   line-height: 1.35;
 }
 
-.tier-row-compact .tier-note { display: none; }
-
 .tier-civs {
   display: flex;
   flex-wrap: wrap;
@@ -463,15 +394,6 @@ button.primary:hover {
   color: var(--banned-text);
   text-decoration: line-through;
   opacity: 0.7;
-}
-
-.tier-badge {
-  margin-left: 4px;
-  padding: 1px 6px;
-  background: var(--border);
-  border-radius: 8px;
-  font-size: 0.72rem;
-  color: var(--muted);
 }
 
 @media (max-width: 600px) {
