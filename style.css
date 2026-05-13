@@ -155,7 +155,7 @@ button.primary:hover {
 
 .civ-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 6px;
 }
 
@@ -181,12 +181,12 @@ button.primary:hover {
   cursor: pointer;
 }
 
-.civ .swatch {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
+.civ-icon {
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
-  border: 1px solid rgba(255,255,255,0.1);
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 .civ .name {
@@ -266,6 +266,6 @@ footer {
 
 @media (max-width: 600px) {
   h1 { font-size: 1.8rem; }
-  .civ-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .civ-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
   button.primary { width: 100%; }
 }
