@@ -251,6 +251,55 @@ const TIER_LISTS = [
 
 const CIVS_BY_NAME = Object.fromEntries(CIVS.map(c => [c.name, c]));
 
+// Wiki article + basic uniques (UA / UU / UB·UI) for each civ.
+// Sourced from civilization.fandom.com/wiki/Civilizations_(Civ5) (Brave New World).
+const WIKI_BASE = "https://civilization.fandom.com/wiki/";
+const CIV_INFO = {
+  America:     { slug: "American_(Civ5)",     ua: ["Manifest Destiny", "All land military units have +1 Sight; 50% discount when buying tiles."], uu: "B-17, Minuteman", ub: "—" },
+  Arabia:      { slug: "Arabian_(Civ5)",      ua: ["Ships of the Desert", "Caravans gain +50% range; trade routes spread your religion twice as effectively; Oil doubled."], uu: "Camel Archer", ub: "Bazaar" },
+  Assyria:     { slug: "Assyrian_(Civ5)",     ua: ["Treasures of Nineveh", "Conquering a city grants a free tech its owner had researched (once per city)."], uu: "Siege Tower", ub: "Royal Library" },
+  Austria:     { slug: "Austrian_(Civ5)",     ua: ["Diplomatic Marriage", "Spend Gold to annex or puppet a City-State that's been your ally for 5 turns."], uu: "Hussar", ub: "Coffee House" },
+  Aztec:       { slug: "Aztec_(Civ5)",        ua: ["Sacrificial Captives", "Gain Culture for each enemy unit your forces kill."], uu: "Jaguar", ub: "Floating Gardens" },
+  Babylon:     { slug: "Babylonian_(Civ5)",   ua: ["Ingenuity", "Free Great Scientist on discovering Writing; earn Great Scientists 50% faster."], uu: "Bowman", ub: "Walls of Babylon" },
+  Brazil:      { slug: "Brazilian_(Civ5)",    ua: ["Carnival", "+100% Tourism during Golden Ages; earn Great Artists, Musicians & Writers 50% faster during them."], uu: "Pracinha", ub: "Brazilwood Camp (improvement)" },
+  Byzantium:   { slug: "Byzantine_(Civ5)",    ua: ["Patriarchate of Constantinople", "Choose one extra Belief when founding a Religion."], uu: "Cataphract, Dromon", ub: "—" },
+  Carthage:    { slug: "Carthaginian_(Civ5)", ua: ["Phoenician Heritage", "All coastal cities get a free Harbor; units may cross mountains after your first Great General."], uu: "African Forest Elephant, Quinquereme", ub: "—" },
+  Celts:       { slug: "Celtic_(Civ5)",       ua: ["Druidic Lore", "+1 Faith per city with an adjacent unimproved Forest (+2 with 3 or more)."], uu: "Pictish Warrior", ub: "Ceilidh Hall" },
+  China:       { slug: "Chinese_(Civ5)",      ua: ["Art of War", "Great General combat bonus +15% and their spawn rate +50%."], uu: "Chu-Ko-Nu", ub: "Paper Maker" },
+  Denmark:     { slug: "Danish_(Civ5)",       ua: ["Viking Fury", "Embarked units +1 Movement and disembark for 1 MP; melee units pillage for free."], uu: "Berserker, Norwegian Ski Infantry", ub: "—" },
+  Egypt:       { slug: "Egyptian_(Civ5)",     ua: ["Monument Builders", "+20% Production toward Wonder construction."], uu: "War Chariot", ub: "Burial Tomb" },
+  England:     { slug: "English_(Civ5)",      ua: ["Sun Never Sets", "+2 Movement for all naval units; receive 1 extra Spy."], uu: "Longbowman, Ship of the Line", ub: "—" },
+  Ethiopia:    { slug: "Ethiopian_(Civ5)",    ua: ["Spirit of Adwa", "+20% combat strength against civs that have more cities than Ethiopia."], uu: "Mehal Sefari", ub: "Stele" },
+  France:      { slug: "French_(Civ5)",       ua: ["City of Light", "Museum and World Wonder theming bonuses are doubled in your Capital."], uu: "Musketeer, Foreign Legion", ub: "Chateau (improvement)" },
+  Germany:     { slug: "German_(Civ5)",       ua: ["Furor Teutonicus", "67% chance to take 25 Gold and recruit a Barbarian beaten in its encampment; -25% land-unit maintenance."], uu: "Landsknecht, Panzer", ub: "Hanse" },
+  Greece:      { slug: "Greek_(Civ5)",        ua: ["Hellenic League", "City-State Influence degrades at half and recovers at twice the normal rate."], uu: "Companion Cavalry, Hoplite", ub: "—" },
+  Huns:        { slug: "Hunnic_(Civ5)",       ua: ["Scourge of God", "Raze cities at double speed; start with Animal Husbandry; +1 Production per Pasture."], uu: "Horse Archer, Battering Ram", ub: "—" },
+  Inca:        { slug: "Incan_(Civ5)",        ua: ["Great Andean Road", "Units ignore terrain cost into Hills; no maintenance for Hill improvements, half elsewhere."], uu: "Slinger", ub: "Terrace Farm (improvement)" },
+  India:       { slug: "Indian_(Civ5)",       ua: ["Population Growth", "Unhappiness from number of cities doubled, from citizens halved."], uu: "War Elephant", ub: "Mughal Fort" },
+  Indonesia:   { slug: "Indonesian_(Civ5)",   ua: ["Spice Islanders", "The first 3 cities founded on other continents each yield 2 unique Luxuries."], uu: "Kris Swordsman", ub: "Candi" },
+  Iroquois:    { slug: "Iroquois_(Civ5)",     ua: ["The Great Warpath", "Move through friendly Forest/Jungle as if roads; they connect cities and trade routes after The Wheel."], uu: "Mohawk Warrior", ub: "Longhouse" },
+  Japan:       { slug: "Japanese_(Civ5)",     ua: ["Bushido", "Units fight at full strength even when damaged; +1 Culture per Fishing Boat, +2 per Atoll."], uu: "Samurai, Zero", ub: "—" },
+  Korea:       { slug: "Korean_(Civ5)",       ua: ["Scholars of the Jade Hall", "+2 Science from every Specialist and Great Person improvement; tech boost when a science building/Wonder is built in the Capital."], uu: "Turtle Ship, Hwach'a", ub: "—" },
+  Maya:        { slug: "Mayan_(Civ5)",        ua: ["The Long Count", "After Theology, a bonus Great Person at the end of each Maya calendar cycle (each choosable once)."], uu: "Atlatlist", ub: "Pyramid" },
+  Mongolia:    { slug: "Mongolian_(Civ5)",    ua: ["Mongol Terror", "+30% Combat Strength vs City-States; all mounted units +1 Movement."], uu: "Keshik, Khan", ub: "—" },
+  Morocco:     { slug: "Moroccan_(Civ5)",     ua: ["Gateway to Africa", "+3 Gold and +1 Culture per trade route with another civ/City-State; partners get +2 Gold."], uu: "Berber Cavalry", ub: "Kasbah (improvement)" },
+  Netherlands: { slug: "Dutch_(Civ5)",        ua: ["Dutch East India Company", "Keep 50% of a Luxury's Happiness even after trading away your last copy."], uu: "Sea Beggar", ub: "Polder (improvement)" },
+  Ottomans:    { slug: "Ottoman_(Civ5)",      ua: ["Barbary Corsairs", "Melee naval units can capture defeated ships; pay only 1/3 naval-unit maintenance."], uu: "Janissary, Sipahi", ub: "—" },
+  Persia:      { slug: "Persian_(Civ5)",      ua: ["Achaemenid Legacy", "Golden Ages last 50% longer; during them units get +1 Movement and +10% Combat Strength."], uu: "Immortal", ub: "Satrap's Court" },
+  Poland:      { slug: "Polish_(Civ5)",       ua: ["Solidarity", "Receive a free Social Policy whenever you advance to the next era."], uu: "Winged Hussar", ub: "Ducal Stable" },
+  Polynesia:   { slug: "Polynesian_(Civ5)",   ua: ["Wayfinding", "Embark and cross Oceans from the start; +1 Sight embarked; +10% Combat Strength near a Moai."], uu: "Maori Warrior", ub: "Moai (improvement)" },
+  Portugal:    { slug: "Portuguese_(Civ5)",   ua: ["Mare Clausum", "Resource diversity grants twice as much Gold for Portugal in trade routes."], uu: "Nau", ub: "Feitoria (improvement)" },
+  Rome:        { slug: "Roman_(Civ5)",        ua: ["The Glory of Rome", "+25% Production toward any building already present in the Capital."], uu: "Ballista, Legion", ub: "—" },
+  Russia:      { slug: "Russian_(Civ5)",      ua: ["Siberian Riches", "Strategic Resources +1 Production; Horses, Iron and Uranium provide double quantity."], uu: "Cossack", ub: "Krepost" },
+  Shoshone:    { slug: "Shoshone_(Civ5)",     ua: ["Great Expanse", "New cities start with extra territory; +15% combat strength within your own borders."], uu: "Pathfinder, Comanche Riders", ub: "—" },
+  Siam:        { slug: "Siamese_(Civ5)",      ua: ["Father Governs Children", "Food, Culture and Faith from friendly City-States increased by 50%."], uu: "Naresuan's Elephant", ub: "Wat" },
+  Songhai:     { slug: "Songhai_(Civ5)",      ua: ["River Warlord", "Triple Gold from Barbarian camps and pillaging cities; land units gain amphibious promotions."], uu: "Mandekalu Cavalry", ub: "Mud Pyramid Mosque" },
+  Spain:       { slug: "Spanish_(Civ5)",      ua: ["Seven Cities of Gold", "Gold for finding Natural Wonders (more if first); their Culture, Happiness and yields doubled."], uu: "Tercio, Conquistador", ub: "—" },
+  Sweden:      { slug: "Swedish_(Civ5)",      ua: ["Nobel Prize", "Gifting a Great Person to a City-State grants 90 Influence; friendship boosts both civs' Great Person rate +10%."], uu: "Hakkapeliitta, Carolean", ub: "—" },
+  Venice:      { slug: "Venetian_(Civ5)",     ua: ["Serenissima", "No Settlers and can't annex; double trade routes; free Merchant of Venice after Optics; may buy buildings in puppets."], uu: "Merchant of Venice, Great Galleass", ub: "—" },
+  Zulu:        { slug: "Zulu_(Civ5)",         ua: ["Iklwa", "Melee units cost 50% less maintenance; all units need 25% less XP to promote."], uu: "Impi", ub: "Ikanda" },
+};
+
 function getCivCheckbox(name) {
   return grid.querySelector(`input[data-civ="${name}"]`);
 }
@@ -271,12 +320,26 @@ function civChip(name, tierIdx) {
   const civ = CIVS_BY_NAME[name];
   if (!civ) return "";
   const banned = isBanned(name) ? " banned" : "";
+  const info = CIV_INFO[name];
+  const tip = info ? `
+      <span class="civ-tip" role="tooltip">
+        <span class="civ-tip-head">
+          <img src="${civ.icon}" alt="" />
+          <span><strong>${name}</strong> <span class="civ-tip-leader">${civ.leader}</span></span>
+        </span>
+        <span class="civ-tip-row"><span class="civ-tip-tag">UA</span><span><strong>${info.ua[0]}</strong> — ${info.ua[1]}</span></span>
+        <span class="civ-tip-row"><span class="civ-tip-tag">UU</span><span>${info.uu}</span></span>
+        <span class="civ-tip-row"><span class="civ-tip-tag">UB</span><span>${info.ub}</span></span>
+        <a class="civ-tip-link" href="${WIKI_BASE}${info.slug}" target="_blank" rel="noopener">View on Civ&nbsp;V Wiki ↗</a>
+      </span>` : "";
   return `
-    <button type="button" class="tier-chip${banned}" data-civ="${name}" data-tier="${tierIdx}"
-            title="${civ.leader} — click to ban/unban">
-      <img src="${civ.icon}" alt="" loading="lazy" />
-      <span>${name}</span>
-    </button>
+    <span class="tier-chip-wrap">
+      <button type="button" class="tier-chip${banned}" data-civ="${name}" data-tier="${tierIdx}"
+              title="Click to ban/unban">
+        <img src="${civ.icon}" alt="" loading="lazy" />
+        <span>${name}</span>
+      </button>${tip}
+    </span>
   `;
 }
 

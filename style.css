@@ -431,6 +431,115 @@ button.primary:hover {
   opacity: 0.7;
 }
 
+/* Hover tooltip: civ uniques + wiki link */
+.tier-chip-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.civ-tip {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 8px;
+  z-index: 30;
+  width: 290px;
+  max-width: 80vw;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  background: var(--panel-2);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--text);
+  text-align: left;
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.12s, transform 0.12s, visibility 0.12s;
+  pointer-events: none;
+}
+
+/* Invisible bridge across the margin gap so the cursor can reach the tooltip. */
+.civ-tip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
+
+.tier-chip-wrap:hover .civ-tip,
+.tier-chip-wrap:focus-within .civ-tip,
+.civ-tip:hover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.civ-tip-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.civ-tip-head img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.civ-tip-head strong {
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
+.civ-tip-leader {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.civ-tip-row {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+.civ-tip-tag {
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  padding-top: 1px;
+}
+
+.civ-tip-row strong {
+  color: var(--text);
+}
+
+.civ-tip-link {
+  margin-top: 2px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.civ-tip-link:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 600px) {
   .tier-row {
     grid-template-columns: 1fr;
